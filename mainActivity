@@ -1,0 +1,485 @@
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <queue>
+#include <algorithm>
+using namespace std;
+
+//crimes function
+struct CrimeCategory {
+    CrimeCategory() {
+
+    }
+
+    string category;
+    CrimeCategory *left;
+    CrimeCategory *right;
+
+    CrimeCategory(const string &cat) : category(cat), left(nullptr), right(nullptr) {}
+
+};
+
+//function to create new node
+CrimeCategory* CreateNode(const string& category)
+{
+    CrimeCategory* newNode = new CrimeCategory();
+    if (newNode==nullptr) {
+        cout << "Memory error\n";
+        return nullptr;
+    }
+    newNode->category = category;
+    newNode->left = newNode->right = nullptr;
+    return newNode;
+}
+
+// Function to insert a key into the Binary tree
+CrimeCategory* insert(CrimeCategory* root, const string &category)
+{
+    // If the tree is empty, assign new node address to root
+    if (root == nullptr) {
+        root=CreateNode(category);
+        return root;
+    }
+
+    // Else, do level order traversal until we find an empty
+    // place, i.e. either left child or right child of some
+    // node is pointing to NULL.
+    queue<CrimeCategory*> q;
+    q.push(root);
+
+    while (!q.empty()) {
+        CrimeCategory* temp = q.front();
+        q.pop();
+
+        if (temp->left != nullptr)
+            q.push(temp->left);
+        else {
+            temp->left = CreateNode(category);
+            return root;
+        }
+
+        if (temp->right != nullptr)
+            q.push(temp->right);
+        else {
+            temp->right = CreateNode(category);
+            return root;
+        }
+    }
+}
+
+    //level order traversal
+    void levelOrder(CrimeCategory *root) {
+        if (root == nullptr) {
+            return;
+        }
+
+        queue<CrimeCategory *> categoryQueue;
+        categoryQueue.push(root);
+        categoryQueue.push(nullptr);
+
+        while (!categoryQueue.empty()) {
+            CrimeCategory *temp = categoryQueue.front();
+            categoryQueue.pop();
+            if (temp == nullptr) {
+                if (!categoryQueue.empty()) {
+
+                    cout << endl;
+                    categoryQueue.push(nullptr);
+                }
+            }
+            else {
+                cout << temp->category << "    ";
+                if (temp->left) {
+                    categoryQueue.push(temp->left);
+                }
+                if (temp->right) {
+                    categoryQueue.push(temp->right);
+                }
+            }
+        }
+    }
+
+    //function for search operation
+CrimeCategory* search(CrimeCategory* root, const string& category) {
+    // Base case: If the tree is empty or the target string is found
+    if (root == nullptr || root->category == category) {
+        return root;
+    }
+
+    CrimeCategory* leftResult = search(root->left, category);
+    if (leftResult) {
+        return leftResult; // Found in the left subtree
+    }
+
+    // If not found in the left subtree, search in the right subtree
+    return search(root->right, category);
+}
+
+//personal records function
+class Node {
+public:
+    string data;
+    Node *next;
+
+    Node(const string& value) : data(value), next(nullptr) {}
+};
+
+class LinkedList_A {
+private:
+    Node* head;
+
+public:
+    LinkedList_A() : head(nullptr) {}
+
+    // Insert a new node at the end of the linked list
+    void insert(const string arr[5]) {
+        //Node* newNode = new Node(arr[0]);
+        if (!head) {
+            head = new Node(arr[0]);
+            Node* current=head;
+            for (int i=1;i<5;i++){
+                current->next=new Node(arr[i]);
+                current=current->next;
+            }
+        } else {
+            Node* current = head;
+            while (current->next) {
+                current = current->next;
+            }
+            for (int i=0;i<5;i++){
+                current->next = new Node(arr[i]);
+                current=current->next;
+            }
+
+        }
+
+    }
+
+
+    void replace(const string& category) {
+        Node* current = head;
+        while (current) {
+            if (current->data == category) {
+                current->data = "NA"; // Replace the value
+                return; // You can choose to update only the first occurrence or all occurrences
+            }
+            current = current->next;
+        }
+    }
+
+    // Display the linked list
+    void display() {
+        Node* current = head;
+        for(int i=0;i<5;i++){
+            if(i==0){
+                cout<<"\nName: ";
+                cout << current->data <<endl;
+                current = current->next;
+            }
+            if(i==1){
+                cout<<"Age: ";
+                cout << current->data <<endl;
+                current = current->next;
+            }
+            if(i==2){
+                cout<<"Gender: ";
+                cout << current->data <<endl;
+                current = current->next;
+            }
+            if(i==3){
+                cout<<"Area/Locality: ";
+                cout << current->data <<endl;
+                current = current->next;
+            }
+            if(i==4){
+                cout<<"Contact Detail(Contact No/Email ID): ";
+                cout << current->data <<endl;
+                current = current->next;
+            }
+        }
+        cout << endl;
+    }
+
+    // Destructor to free memory
+    ~LinkedList_A() {
+        while (head) {
+            Node* temp = head;
+            head = head->next;
+            delete temp;
+        }
+    }
+};
+
+//criminal records function
+class node {
+public:
+    string data;
+    node* next;
+
+    node(const string& value) : data(value), next(nullptr) {}
+};
+
+class LinkedList_B {
+private:
+    node* head;
+
+public:
+    LinkedList_B() : head(nullptr) {}
+
+    // Insert a new node at the end of the linked list
+    void insert(const string arr2[7]) {
+        //Node* newNode = new Node(arr[0]);
+        if (!head) {
+            head = new node(arr2[0]);
+            node* current=head;
+            for (int i=1;i<7;i++){
+                current->next=new node(arr2[i]);
+                current=current->next;
+            }
+        } else {
+            node* current = head;
+            while (current->next) {
+                current = current->next;
+            }
+            for (int i=0;i<7;i++){
+                current->next = new node(arr2[i]);
+                current=current->next;
+            }
+
+        }
+    }
+
+    void replace(const string& category) {
+        node* current = head;
+        while (current) {
+            if (current->data == category) {
+                current->data = "NA"; // Replace the value
+                return; // You can choose to update only the first occurrence or all occurrences
+            }
+            current = current->next;
+        }
+    }
+
+
+    // Display the linked list
+    void display() {
+        node* current = head;
+        for(int i=0;i<7;i++){
+            if(i==0){
+                cout<<"\nName of the Criminal: ";
+                cout << current->data <<endl;
+                current = current->next;
+            }
+            else if(i==1){
+                cout<<"Age of the Criminal: ";
+                cout << current->data <<endl;
+                current = current->next;
+            }
+            else if(i==2){
+                cout<<"Gender of the Criminal: ";
+                cout << current->data <<endl;
+                current = current->next;
+            }
+            else if(i==3){
+                cout<<"Where did the crime occur: ";
+                cout << current->data <<endl;
+                current = current->next;
+            }
+            else if(i==4){
+                cout<<"Complexion: ";
+                cout << current->data <<endl;
+                current = current->next;
+            }
+            else if(i==5){
+                cout<<"Height: ";
+                cout << current->data <<endl;
+                current = current->next;
+            }
+            else if(i==6){
+                cout<<"Any Identification Marks: ";
+                cout << current->data <<endl;
+            }
+        }
+        cout << endl;
+    }
+
+    // Destructor to free memory
+    ~LinkedList_B() {
+        while (head) {
+            node* temp = head;
+            head = head->next;
+            delete temp;
+        }
+    }
+};
+
+
+void inputPersonalInfo(string &name,string &age,string &gender,string &address,string &phone){
+    fstream filin;
+    filin.open("PersonalRecords.txt",std::ofstream::out | std::ofstream::app);
+    cout<<"Enter your name: ";
+    cin>>name;
+    filin<<name<<",";
+
+    cout << "Age: ";
+    cin >> age;
+    filin<<age<<",";
+
+    cout << "Gender: ";
+    cin>>gender;
+    filin<<gender<<",";
+
+    cout << "Area/Locality: ";
+    cin>>address;
+    filin<<address<<",";
+
+    cout << "Contact Detail(Contact No/Email ID): ";
+    cin>>phone;
+    filin<<phone<<"\n";
+
+    filin.close();
+}
+
+void inputCriminalInfo(string &n,string &a,string &g,string &area,string &com,string &height,string &other){
+    fstream filin;
+    filin.open("CriminalRecords.txt",std::ofstream::out | std::ofstream::app);
+    cout<<"Enter criminal's name: ";
+    cin>>n;
+    filin<<n<<",";
+
+    cout << "Age of the criminal: ";
+    cin >> a;
+    filin<<a<<",";
+
+    cout << "Gender of the criminal: ";
+    cin>>g;
+    filin<<g<<",";
+
+    cout << "Where did the crime occur(REQUIRED): ";
+    cin>>area;
+    filin<<area<<",";
+
+    cout << "Complexion of criminal: ";
+    cin>>com;
+    filin<<com<<",";
+
+    cout << "Height of criminal: ";
+    cin>>height;
+    filin<<height<<",";
+
+    cout << "Any other identification marks: ";
+    cin>>other;
+    filin<<other<<"\n";
+
+    filin.close();
+}
+
+//driver's code
+int main(){
+    cout << "\n";
+    cout <<"\t\t\t\t    ----------------------------------\n";
+    cout <<"\t\t\t\t\t       |CAUGHT YOU|\n";
+    cout <<"\t\t\t\t    ----------------------------------\n";
+    cout <<"\n";
+
+    LinkedList_A personalRecords;
+    LinkedList_B criminalRecords;
+
+    int user;
+    string crime;
+    cout<<"Who are you? "<<endl;
+    cout<<"1. Officer"<<endl;
+    cout<<"2. Victim"<<endl;
+    cout<<"\nEnter your choice:";
+    cin>>user;
+
+    CrimeCategory* crimeTree=nullptr;
+
+    crimeTree = insert(crimeTree, "Crimes");
+    crimeTree->left = insert(crimeTree->left, "Physical Crimes");
+    crimeTree->right = insert(crimeTree->right, "Non-Physical Crimes");
+    crimeTree->left->left = insert(crimeTree->left->left, "Violent Crimes");
+    crimeTree->left->right = insert(crimeTree->left->right, "Sexual Offenses");
+    crimeTree->right->left = insert(crimeTree->right->left, "Drug-related");
+    crimeTree->right->right = insert(crimeTree->right->right, "Cybercrime");
+    crimeTree->left->left->left = insert(crimeTree->left->left->left, "Casualty");
+    crimeTree->left->left->right = insert(crimeTree->left->left->right, "No Casualty");
+    crimeTree->left->right->left = insert(crimeTree->left->right->left, "Exploitation");
+    crimeTree->left->right->right = insert(crimeTree->left->right->right, "Sexual assault");
+    crimeTree->right->left->left = insert(crimeTree->right->left->left, "Possession");
+    crimeTree->right->left->right = insert(crimeTree->right->left->right, "Manufacturing");
+    crimeTree->right->right->left = insert(crimeTree->right->right->left, "Money");
+    crimeTree->right->right->right = insert(crimeTree->right->right->right, "Non Money");
+    crimeTree->left->left->left->left = insert(crimeTree->left->left->left->left, "Hit and run");
+    crimeTree->left->left->left->right = insert(crimeTree->left->left->left->right, "Murder");
+    crimeTree->left->left->right->left = insert(crimeTree->left->left->right->left, "Robbery");
+    crimeTree->left->left->right->right = insert(crimeTree->left->left->right->right, "Kidnapping");
+    crimeTree->left->right->left->left = insert(crimeTree->left->right->left->left, "Child abuse");
+    crimeTree->left->right->left->right = insert(crimeTree->left->right->left->right, "Human trafficking");
+    crimeTree->left->right->right->left = insert(crimeTree->left->right->right->left, "Rape");
+    crimeTree->left->right->right->right = insert(crimeTree->left->right->right->right, "Child pornography");
+    crimeTree->right->right->left->left = insert(crimeTree->right->right->left->left, "Fraud");
+    crimeTree->right->right->right->left = insert(crimeTree->right->right->right->left, "Harassment");
+    crimeTree->right->right->right->right = insert(crimeTree->right->right->right->right, "Hacking");
+
+    if (user==1){
+        cout<<"Welcome Officer!\n";
+        cout << "Categorized Crimes (Level-order Traversal):\n\n";
+
+        levelOrder(crimeTree);
+        cout<<"\nEnter the crime you want to search:  ";
+        cin>>crime;
+
+
+        CrimeCategory* foundNode = search(crimeTree, crime);
+
+        if (foundNode) {
+            cout << "Value found: " << foundNode->category << endl;
+        }
+        else {
+            cout << "Value not found." << endl;
+        }
+
+    }
+    else if (user==2){
+        cout<<"Welcome to CAUGHT YOU!\n"<<endl;
+        levelOrder(crimeTree);
+        fstream filin;
+        filin.open("Crimes.txt",std::ofstream::out | std::ofstream::app);
+        cout<<"\nWhat crime do you want to report?  ";
+        cin>>crime;
+        filin<<crime<<"\n";
+        filin.close();
+        cout<<"ENTER YOUR DETAILS"<<endl;
+        string name,age,gender,address,phone;
+        inputPersonalInfo(name,age,gender,address,phone);
+        string arr[5] = {name, age, gender, address, phone};
+        personalRecords.insert(arr);
+
+        cout<<"\nENTER DETAILS OF THE CRIMINAL"<<endl;
+        cout<<"NOTE- enter NA if unknown"<<endl;
+        string n,a,g,area,com,height,other;
+        inputCriminalInfo(n,a,g,area,com,height,other);
+        string arr2[7] = {n,a,g,area,com,height,other};
+        criminalRecords.insert(arr2);
+        cout<<"\n\nCRIME:  "<<crime<<endl;
+        cout<<endl;
+        cout<<"PERSONAL DETAILS  "<<endl;
+        personalRecords.display();
+        cout<<"CRIMINAL DETAILS  "<<endl;
+        criminalRecords.display();
+        cout<<endl;
+
+        cout<<"Your crime has been reported!"<<endl;
+    }
+    else{
+        cout<<"Enter valid choice"<<endl;
+    }
+    cout <<"\t\t\t\t    ----------------------------------\n";
+    cout <<"\t\t\t\t\t       | EXIT |\n";
+    cout <<"\t\t\t\t    | THANK YOU FOR USING 'CAUGHT YOU' |\n";
+    cout <<"\t\t\t\t    ----------------------------------\n";
+
+    return 0;
+}
+
